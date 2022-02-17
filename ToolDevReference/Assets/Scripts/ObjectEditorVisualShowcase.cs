@@ -7,9 +7,7 @@ using UnityEngine;
 [ExecuteAlways] // used to run code in editor and not only when play is clicked
 public class ObjectEditorVisualShowcase : MonoBehaviour
 {
-    [Range(1f, 8f)] public float radius = 1;
-    public float damage = 10;
-    public Color color = Color.red;
+    public ObjectTypeSO objectTypeSo;
 
     private static readonly int ShaderPropertyColor = Shader.PropertyToID("_Color"); // cache string ID into an int for optimizing 
     private MaterialPropertyBlock _mpb;
@@ -37,18 +35,22 @@ public class ObjectEditorVisualShowcase : MonoBehaviour
 
     private void OnValidate() => ApplyColor(); // On Validate is called when anything is changed in the inspector on property change
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos() // OnDrawGizmosSelected() used for drawing gizmo only when selected in editor
     {
-        Handles.color = color;
-        Handles.DrawWireDisc(transform.position, transform.up, radius);
+        if (objectTypeSo == null) return;
+        
+        Handles.color = objectTypeSo.color;
+        Handles.DrawWireDisc(transform.position, transform.up, objectTypeSo.radius);
     }
 
     private MaterialPropertyBlock Mpb => _mpb ??= new MaterialPropertyBlock(); // ??= (Null-Coalescing Operator) is the same as if (_mpb == null) then _mpb = new Material...
     
     private void ApplyColor()
     {
+        if (objectTypeSo == null) return;
+        
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>(); // get the mesh renderer of the object
-        Mpb.SetColor(ShaderPropertyColor, color); // set the color of the material property block
+        Mpb.SetColor(ShaderPropertyColor, objectTypeSo.color); // set the color of the material property block
         meshRenderer.SetPropertyBlock(_mpb); // assign the MPB to the mesh renderer
     }
 }
