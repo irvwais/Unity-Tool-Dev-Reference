@@ -16,6 +16,8 @@ public class MultiObjectManager : MonoBehaviour
     {
         foreach (var objects in allObjects)
         {
+            if (objects.objectTypeSo == null) continue;
+
             if (isUsingDrawLines) { Handles.DrawAAPolyLine(transform.position, objects.transform.position); }
             
             else
@@ -30,7 +32,7 @@ public class MultiObjectManager : MonoBehaviour
                     objectsPos, 
                     managerPos - tangentOffset,
                     objectsPos + tangentOffset,
-                    objects.color,
+                    objects.objectTypeSo.color,
                     EditorGUIUtility.whiteTexture,
                     1f
                 );   
